@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employees - PSA Sprint</title>
+    <style>
+        html, body, #content {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #container, .sapUiComponentContainer {
+            height: 100% !important;
+            width: 100% !important;
+        }
+        #sap-ui-static {
+            height: 0 !important;
+            width: 0 !important;
+            overflow: hidden !important;
+        }
+    </style>
+    <script id="sap-ui-bootstrap"
+        src="https://ui5.sap.com/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-resourceroots='{"psasprint.employees": "./"}'
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+        data-sap-ui-async="true"
+        data-sap-ui-frameOptions="allow">
+    </script>
+</head>
+<body class="sapUiBody sapUiSizeCompact" id="content">
+    <div data-sap-ui-component
+        data-name="psasprint.employees"
+        data-id="container"
+        data-settings='{"id": "employees"}'
+        data-height="100%"
+        style="height: 100%; width: 100%;">
+    </div>
+</body>
+</html>

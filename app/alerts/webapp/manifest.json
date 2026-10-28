@@ -1,0 +1,88 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "psasprint.alerts",
+    "type": "application",
+    "title": "Alerts",
+    "description": "Alerts Management",
+    "dataSources": {
+      "mainService": {
+        "uri": "/psa/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui5": {
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "models": {
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      }
+    },
+    "routing": {
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "AlertsList",
+          "target": "AlertsList"
+        },
+        {
+          "pattern": "Alerts({key}):?query:",
+          "name": "AlertsDetail",
+          "target": "AlertsDetail"
+        }
+      ],
+      "targets": {
+        "AlertsList": {
+          "type": "Component",
+          "id": "AlertsList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "entitySet": "Alerts",
+              "variantManagement": "Page",
+              "navigation": {
+                "Alerts": {
+                  "detail": {
+                    "route": "AlertsDetail"
+                  }
+                }
+              },
+              "initialLoad": "Auto"
+            }
+          }
+        },
+        "AlertsDetail": {
+          "type": "Component",
+          "id": "AlertsDetail",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "entitySet": "Alerts",
+              "editableHeaderContent": false,
+              "initialLoad": "Auto"
+            }
+          }
+        }
+      }
+    }
+  }
+}

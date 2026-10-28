@@ -1,0 +1,73 @@
+{
+  "xsappname": "psasprint",
+  "tenant-mode": "dedicated",
+  "description": "Security configuration for PSA Sprint application",
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "https://28818c37trial-dev-psasprint-app.cfapps.us10-001.hana.ondemand.com/**",
+      "https://*.cfapps.us10-001.hana.ondemand.com/**",
+      "https://*.cfapps.*.hana.ondemand.com/**",
+      "https://*.hana.ondemand.com/**"
+    ]
+  },
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.PSA_Admin",
+      "description": "Administrator access with organization-wide management authority"
+    },
+    {
+      "name": "$XSAPPNAME.PSA_Manager",
+      "description": "Project Manager access with portfolio management and approval authority"
+    },
+    {
+      "name": "$XSAPPNAME.PSA_Employee",
+      "description": "Employee access with self-service timesheets, tasks, and project views"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "PSA_Admin",
+      "description": "PSA Administrator Role Template",
+      "scope-references": [
+        "$XSAPPNAME.PSA_Admin"
+      ]
+    },
+    {
+      "name": "PSA_Manager",
+      "description": "PSA Manager Role Template",
+      "scope-references": [
+        "$XSAPPNAME.PSA_Manager"
+      ]
+    },
+    {
+      "name": "PSA_Employee",
+      "description": "PSA Employee Role Template",
+      "scope-references": [
+        "$XSAPPNAME.PSA_Employee"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "PSA_Administrators",
+      "description": "PSA Administrator Collection - Full Organizational Authority",
+      "role-template-references": [
+        "$XSAPPNAME.PSA_Admin"
+      ]
+    },
+    {
+      "name": "PSA_Managers",
+      "description": "PSA Project Manager Collection - Portfolio and Approval Authority",
+      "role-template-references": [
+        "$XSAPPNAME.PSA_Manager"
+      ]
+    },
+    {
+      "name": "PSA_Employees",
+      "description": "PSA Employee Collection - Staff Self-Service Authority",
+      "role-template-references": [
+        "$XSAPPNAME.PSA_Employee"
+      ]
+    }
+  ]
+}

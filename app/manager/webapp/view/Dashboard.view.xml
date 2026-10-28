@@ -1,0 +1,231 @@
+<mvc:View
+    controllerName="psasprint.manager.controller.Dashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout">
+
+    <Page
+        id="dashboardPage"
+        title="Manager Dashboard"
+        showNavButton="false"
+        busy="{dash>/busy}">
+        <headerContent>
+            <Button icon="sap-icon://refresh" tooltip="Refresh Data" press=".onRefresh" />
+        </headerContent>
+
+        <content>
+            <!-- KPI Cards Section (6 Cards) -->
+            <VBox class="psaSection">
+                <Title text="Portfolio Key Performance Indicators" level="H3" class="psaSectionTitle" />
+                <layout:Grid defaultSpan="XL2 L4 M6 S12" class="sapUiNoMargin">
+                    <!-- 1. Active Projects -->
+                    <VBox class="psaKpiCard" press=".onKpiPressProjects">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://project-definition-triangle-2" class="psaKpiIcon" />
+                        </HBox>
+                        <Text text="{dash>/kpis/activeProjects}" class="psaKpiValue" />
+                        <Text text="Active Projects" class="psaKpiLabel" />
+                    </VBox>
+
+                    <!-- 2. At-Risk Budgets -->
+                    <VBox class="psaKpiCard" press=".onKpiPressBudgets">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://alert" class="psaKpiIcon" color="#e78c07" />
+                        </HBox>
+                        <Text text="{dash>/kpis/atRiskBudgets}" class="psaKpiValue" />
+                        <Text text="At-Risk Budgets (≥80%)" class="psaKpiLabel" />
+                    </VBox>
+
+                    <!-- 3. Pending Approvals -->
+                    <VBox class="psaKpiCard" press=".onKpiPressApprovals">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://task" class="psaKpiIcon" />
+                        </HBox>
+                        <Text text="{dash>/kpis/pendingApprovals}" class="psaKpiValue" />
+                        <Text text="Pending Approvals" class="psaKpiLabel" />
+                    </VBox>
+
+                    <!-- 4. Unbilled Hours -->
+                    <VBox class="psaKpiCard" press=".onKpiPressTimesheets">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://time-entry-request" class="psaKpiIcon" />
+                        </HBox>
+                        <Text text="{dash>/kpis/unbilledHours} h" class="psaKpiValue" />
+                        <Text text="Unbilled Hours" class="psaKpiLabel" />
+                    </VBox>
+
+                    <!-- 5. Draft Invoices -->
+                    <VBox class="psaKpiCard" press=".onKpiPressInvoices">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://document" class="psaKpiIcon" />
+                        </HBox>
+                        <Text text="{dash>/kpis/draftInvoices}" class="psaKpiValue" />
+                        <Text text="Draft Invoices" class="psaKpiLabel" />
+                    </VBox>
+
+                    <!-- 6. Overdue Amount -->
+                    <VBox class="psaKpiCard" press=".onKpiPressInvoices">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://money-bills" class="psaKpiIcon" color="#bb0000" />
+                        </HBox>
+                        <Text text="₹{dash>/kpis/overdueAmount}" class="psaKpiValue" />
+                        <Text text="Overdue Amount" class="psaKpiLabel" />
+                    </VBox>
+                </layout:Grid>
+            </VBox>
+
+            <!-- 1. Project Portfolio Table (Exact 8 columns required) -->
+            <VBox class="psaSection">
+                <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
+                    <Title text="Project Portfolio" level="H3" class="psaSectionTitle" />
+                    <Button text="Manage All Projects" icon="sap-icon://open-command-field" press=".onNavProjects" />
+                </HBox>
+
+                <Table
+                    id="portfolioTable"
+                    items="{dash>/portfolio}"
+                    noDataText="No projects assigned to your portfolio."
+                    growing="true"
+                    growingThreshold="20">
+                    <columns>
+                        <Column width="8rem"><Text text="Code" /></Column>
+                        <Column width="14rem"><Text text="Project" /></Column>
+                        <Column width="12rem"><Text text="Client" /></Column>
+                        <Column width="9rem"><Text text="Billing" /></Column>
+                        <Column width="8rem"><Text text="Status" /></Column>
+                        <Column width="8rem" hAlign="End"><Text text="Consumed h" /></Column>
+                        <Column width="16rem"><Text text="Budget Burn" /></Column>
+                        <Column width="7rem" hAlign="Center"><Text text="Action" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier title="{dash>projectCode}" />
+                                <Link text="{dash>projectName}" press=".onViewProjectDetails" />
+                                <Text text="{dash>clientName}" />
+                                <Text text="{dash>billingType}" />
+                                <ObjectStatus
+                                    text="{dash>status}"
+                                    state="{path: 'dash>status', formatter: '.formatStatusState'}" />
+                                <Text text="{dash>consumedHours} h" />
+                                <!-- Budget Burn Progress Bar: Visual thresholds green < 80%, amber 80-99%, red >= 100% -->
+                                <ProgressIndicator
+                                    percentValue="{dash>budgetBurn}"
+                                    displayValue="{dash>budgetBurn}%"
+                                    state="{path: 'dash>budgetBurn', formatter: '.formatBudgetBurnState'}"
+                                    width="140px" />
+                                <Button
+                                    text="View"
+                                    type="Transparent"
+                                    icon="sap-icon://navigation-right-arrow"
+                                    press=".onViewProjectDetails" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+
+            <!-- 2. Task Management & Employee Allocation (Manager Responsibility) -->
+            <VBox class="psaSection">
+                <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
+                    <VBox>
+                        <Title text="Task Allocation &amp; Team Work Packages" level="H3" class="psaSectionTitle" style="margin-bottom: 0.2rem;" />
+                        <Text text="Create and assign deliverables to staff employees across your managed projects." />
+                    </VBox>
+                    <HBox>
+                        <Button text="Assign Task" icon="sap-icon://add-task" type="Emphasized" press=".onOpenAssignTaskDialog" class="sapUiTinyMarginEnd" />
+                        <Button text="All Tasks App" icon="sap-icon://open-command-field" press=".onNavTasks" />
+                    </HBox>
+                </HBox>
+
+                <Table
+                    id="managerTasksTable"
+                    items="{dash>/tasks}"
+                    noDataText="No tasks created yet for your managed projects."
+                    growing="true"
+                    growingThreshold="10">
+                    <columns>
+                        <Column width="14rem"><Text text="Task Title" /></Column>
+                        <Column width="12rem"><Text text="Project" /></Column>
+                        <Column width="12rem"><Text text="Assigned To" /></Column>
+                        <Column width="8rem"><Text text="Due Date" /></Column>
+                        <Column width="7rem" hAlign="End"><Text text="Est. Hours" /></Column>
+                        <Column width="7rem" hAlign="End"><Text text="Actual Hours" /></Column>
+                        <Column width="8rem" hAlign="Center"><Text text="Priority" /></Column>
+                        <Column width="8rem" hAlign="Center"><Text text="Status" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier title="{dash>TASK_TITLE}" text="{dash>DESCRIPTION}" />
+                                <Text text="{dash>project/PROJECT_NAME}" />
+                                <ObjectIdentifier
+                                    title="{= ${dash>assignedTo/FULL_NAME} ? ${dash>assignedTo/FULL_NAME} : 'Unassigned'}"
+                                    text="{dash>assignedTo/EMPLOYEE_CODE}" />
+                                <Text text="{dash>DUE_DATE}" />
+                                <Text text="{dash>ESTIMATED_HOURS} h" />
+                                <Text text="{dash>ACTUAL_HOURS} h" />
+                                <ObjectStatus
+                                    text="{dash>PRIORITY}"
+                                    state="{path: 'dash>PRIORITY', formatter: '.formatPriorityState'}" />
+                                <ObjectStatus
+                                    text="{dash>STATUS}"
+                                    state="{path: 'dash>STATUS', formatter: '.formatTaskStatusState'}" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+
+            <!-- 3. Timesheet Approvals Workflow Area -->
+            <VBox class="psaSection">
+                <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
+                    <Title text="Timesheet Approvals Queue" level="H3" class="psaSectionTitle" />
+                    <Button text="All Timesheets App" icon="sap-icon://timesheet" press=".onNavTimesheets" />
+                </HBox>
+
+                <Table
+                    id="approvalsTable"
+                    items="{dash>/approvals}"
+                    noDataText="No pending timesheets awaiting your review."
+                    growing="true">
+                    <columns>
+                        <Column><Text text="Employee" /></Column>
+                        <Column><Text text="Week Starting" /></Column>
+                        <Column hAlign="End"><Text text="Total Hours" /></Column>
+                        <Column><Text text="Submission Date" /></Column>
+                        <Column><Text text="Status" /></Column>
+                        <Column hAlign="Center"><Text text="Actions" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier
+                                    title="{dash>employee/FULL_NAME}"
+                                    text="{dash>employee/EMPLOYEE_CODE}" />
+                                <Text text="{dash>WEEK_START}" />
+                                <Text text="{dash>TOTAL_HOURS} h" />
+                                <Text text="{path: 'dash>SUBMISSION_DATE', formatter: '.formatDate'}" />
+                                <ObjectStatus text="{dash>STATUS}" state="Warning" />
+                                <HBox justifyContent="Center" class="sapUiTinyMarginBeginEnd">
+                                    <Button
+                                        text="Approve"
+                                        type="Accept"
+                                        icon="sap-icon://accept"
+                                        press=".onApproveTimesheet"
+                                        class="sapUiTinyMarginEnd" />
+                                    <Button
+                                        text="Reject"
+                                        type="Reject"
+                                        icon="sap-icon://decline"
+                                        press=".onOpenRejectDialog" />
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

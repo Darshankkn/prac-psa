@@ -1,0 +1,88 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "psasprint.employees",
+    "type": "application",
+    "title": "Employees",
+    "description": "Employees Management",
+    "dataSources": {
+      "mainService": {
+        "uri": "/psa/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui5": {
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "models": {
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      }
+    },
+    "routing": {
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "EmployeesList",
+          "target": "EmployeesList"
+        },
+        {
+          "pattern": "Employees({key}):?query:",
+          "name": "EmployeesDetail",
+          "target": "EmployeesDetail"
+        }
+      ],
+      "targets": {
+        "EmployeesList": {
+          "type": "Component",
+          "id": "EmployeesList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "entitySet": "Employees",
+              "variantManagement": "Page",
+              "navigation": {
+                "Employees": {
+                  "detail": {
+                    "route": "EmployeesDetail"
+                  }
+                }
+              },
+              "initialLoad": "Auto"
+            }
+          }
+        },
+        "EmployeesDetail": {
+          "type": "Component",
+          "id": "EmployeesDetail",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "entitySet": "Employees",
+              "editableHeaderContent": false,
+              "initialLoad": "Auto"
+            }
+          }
+        }
+      }
+    }
+  }
+}

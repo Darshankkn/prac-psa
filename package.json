@@ -1,0 +1,94 @@
+{
+  "name": "psasprint",
+  "version": "1.0.0",
+  "description": "Project and Services Administration (PSA) Application - SAP CAP + SAP Fiori on SAP BTP",
+  "repository": "",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^8",
+    "express": "^4",
+    "@sap/xssec": "^4",
+    "passport": "^0.7",
+    "hdb": "^2"
+  },
+  "devDependencies": {
+    "@sap/cds-dk": "^8",
+    "@sap/hdi-deploy": "^5",
+    "@cap-js/sqlite": "^1",
+    "rimraf": "^5"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "dev": "cds watch",
+    "build": "cds build --production",
+    "clean": "rimraf gen"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "url": "db.sqlite"
+        }
+      },
+      "[production]": {
+        "db": {
+          "kind": "hana-cloud"
+        },
+        "auth": {
+          "kind": "xsuaa"
+        }
+      },
+      "[development]": {
+        "auth": {
+          "kind": "mocked",
+          "users": {
+            "admin@psa.com": {
+              "password": "admin",
+              "roles": ["PSA_Admin", "authenticated-user"],
+              "attr": {
+                "email": "admin@psa.com"
+              }
+            },
+            "manager@psa.com": {
+              "password": "manager",
+              "roles": ["PSA_Manager", "authenticated-user"],
+              "attr": {
+                "email": "manager@psa.com"
+              }
+            },
+            "employee@psa.com": {
+              "password": "employee",
+              "roles": ["PSA_Employee", "authenticated-user"],
+              "attr": {
+                "email": "employee@psa.com"
+              }
+            },
+            "emp2@psa.com": {
+              "password": "employee",
+              "roles": ["PSA_Employee", "authenticated-user"],
+              "attr": {
+                "email": "emp2@psa.com"
+              }
+            }
+          }
+        }
+      }
+    },
+    "hana": {
+      "deploy-format": "hdbtable"
+    }
+  },
+  "sapux": [
+    "app/clients",
+    "app/employees",
+    "app/projects",
+    "app/budgets",
+    "app/timesheets",
+    "app/tasks",
+    "app/milestones",
+    "app/invoices",
+    "app/alerts"
+  ]
+}

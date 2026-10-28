@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise PSA — Professional Services Automation</title>
+  <link rel="stylesheet" href="common/style.css">
+  <style>
+    body {
+      font-family: "72", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f6f7;
+      color: #1d2d3e;
+    }
+    .header {
+      background: linear-gradient(135deg, #0070f2 0%, #0040b0 100%);
+      color: white;
+      padding: 2.5rem 3rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .header p {
+      margin: 0.5rem 0 0 0;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    .container {
+      max-width: 1280px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 2rem 0 1rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #0070f2;
+      display: inline-block;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .tile {
+      background: white;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .tile:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,112,242,0.15);
+      border-color: #0070f2;
+    }
+    .tile-role {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 0.75rem;
+      align-self: flex-start;
+    }
+    .role-manager { background: #e8f4fd; color: #0070f2; }
+    .role-admin { background: #fdf2e9; color: #d97706; }
+    .role-employee { background: #edf7ed; color: #2e7d32; }
+    .role-entity { background: #f3e8ff; color: #7e22ce; }
+    .tile-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+      color: #1d2d3e;
+    }
+    .tile-desc {
+      font-size: 0.9rem;
+      color: #6a6d70;
+      line-height: 1.4;
+      margin: 0;
+    }
+    .tile-footer {
+      margin-top: 1.25rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #0070f2;
+      display: flex;
+      align-items: center;
+    }
+    .tile-footer::after {
+      content: " →";
+      transition: transform 0.2s;
+    }
+    .tile:hover .tile-footer::after {
+      transform: translateX(4px);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Enterprise Professional Services Automation</h1>
+  </div>
+
+  <div class="container">
+    <div class="section-title">Role-Based Custom Dashboards</div>
+    <div class="grid">
+      <a href="manager/webapp/index.html" class="tile">
+        <div>
+          <span class="tile-role role-manager">Manager Role</span>
+          <h2 class="tile-title">Manager Dashboard</h2>
+          <p class="tile-desc">Task allocation &amp; assignment, team timesheet approvals, and project portfolio tracking with budget burn.</p>
+        </div>
+        <div class="tile-footer">Open Dashboard</div>
+      </a>
+
+      <a href="admin/webapp/index.html" class="tile">
+        <div>
+          <span class="tile-role role-admin">Administrator Role</span>
+          <h2 class="tile-title">Admin Dashboard</h2>
+          <p class="tile-desc">Organization-wide KPIs, client &amp; project management, invoice lifecycle (Draft → Issued → Paid), and financial governance.</p>
+        </div>
+        <div class="tile-footer">Open Dashboard</div>
+      </a>
+
+      <a href="employee/webapp/index.html" class="tile">
+        <div>
+          <span class="tile-role role-employee">Employee Role</span>
+          <h2 class="tile-title">Employee Dashboard</h2>
+          <p class="tile-desc">Personal KPIs, assigned task execution with status updates, timesheet management (Draft → Submit), and project visibility.</p>
+        </div>
+        <div class="tile-footer">Open Dashboard</div>
+      </a>
+    </div>
+
+    <div class="section-title">Dedicated Business Entity Applications (Fiori Elements)</div>
+    <div class="grid">
+      <a href="projects/webapp/index.html" class="tile">
+        <div>
+          <span class="tile-role role-entity">Entity</span>
+          <h2 class="tile-title">Projects</h2>
+          <p class="tile-desc">List report, details, client associations, billing types, dates, and related budgets/tasks.</p>
+        </div>
+        <div class="tile-footer">Launch App</div>
+      </a>
+
+      <a href="clients/webapp/index.html" class="tile">
+        <div>
+          <span class="tile-role role-entity">Master Data</span>
+          <h2 class="tile-title">Clients</h2>
+          <p class="tile-desc">Client organizations, contact persons, phone, email, addresses, and status management.</p>
+        </div>
+        <div class="tile-footer">Launch App</div>
+      </a>
+
+      <a href="employees/webapp/index.html" class="tile">
+        <div>
+          <span class="tile-role role-entity">Master Data</span>
+          <h2 class="tile-title">Employees</h2>
+          <p class="tile-desc">Staff directory, roles (ADMIN, MANAGER, EMPLOYEE), BTP identity mapping (AUTH_ID).</p>
+        </div>
+        <div class="tile-footer">Launch App</div>
+      </a>
+
+      <a href="budgets/webapp/index.html" class="tile">
+        <div>
+          <span class="tile-role role-entity">Finance</span>
+          <h2 class="tile-title">Budgets</h2>
+          <p class="tile-desc">Project budget allocations, consumed amounts, currencies, and threshold tracking.</p>
+        </div>
+        <div class="tile-footer">Launch App</div>
+      </a>
+
+      <a href="timesheets/webapp/index.html" class="tile">
+        <div>
+          <span class="tile-role role-entity">Operations</span>
+          <h2 class="tile-title">Timesheets</h2>
+          <p class="tile-desc">Weekly timesheet records, status lifecycle (DRAFT, SUBMITTED, APPROVED, REJECTED).</p>
+        </div>
+        <div class="tile-footer">Launch App</div>
+      </a>
+
+      <a href="tasks/webapp/index.html" class="tile">
+        <div>
+          <span class="tile-role role-entity">Operations</span>
+          <h2 class="tile-title">Tasks</h2>
+          <p class="tile-desc">Project work items, priority levels, estimated/actual hours, and employee assignments.</p>
+        </div>
+        <div class="tile-footer">Launch App</div>
+      </a>
+
+      <a href="milestones/webapp/index.html" class="tile">
+        <div>
+          <span class="tile-role role-entity">Operations</span>
+          <h2 class="tile-title">Milestones</h2>
+          <p class="tile-desc">Project milestone schedules, due dates, completion percentages, and overdue flags.</p>
+        </div>
+        <div class="tile-footer">Launch App</div>
+      </a>
+
+      <a href="invoices/webapp/index.html" class="tile">
+        <div>
+          <span class="tile-role role-entity">Finance</span>
+          <h2 class="tile-title">Invoices</h2>
+          <p class="tile-desc">Client billing, NET / TAX / GROSS amounts, due dates, payment tracking, and overdue status.</p>
+        </div>
+        <div class="tile-footer">Launch App</div>
+      </a>
+
+      <a href="alerts/webapp/index.html" class="tile">
+        <div>
+          <span class="tile-role role-entity">Notifications</span>
+          <h2 class="tile-title">Alerts</h2>
+          <p class="tile-desc">System alerts for budget risk, overdue invoices, pending approvals, and rejected timesheets.</p>
+        </div>
+        <div class="tile-footer">Launch App</div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

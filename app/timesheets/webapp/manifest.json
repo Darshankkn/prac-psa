@@ -1,0 +1,88 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "psasprint.timesheets",
+    "type": "application",
+    "title": "Timesheets",
+    "description": "Timesheets Management",
+    "dataSources": {
+      "mainService": {
+        "uri": "/psa/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui5": {
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "models": {
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      }
+    },
+    "routing": {
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "TimesheetsList",
+          "target": "TimesheetsList"
+        },
+        {
+          "pattern": "Timesheets({key}):?query:",
+          "name": "TimesheetsDetail",
+          "target": "TimesheetsDetail"
+        }
+      ],
+      "targets": {
+        "TimesheetsList": {
+          "type": "Component",
+          "id": "TimesheetsList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "entitySet": "Timesheets",
+              "variantManagement": "Page",
+              "navigation": {
+                "Timesheets": {
+                  "detail": {
+                    "route": "TimesheetsDetail"
+                  }
+                }
+              },
+              "initialLoad": "Auto"
+            }
+          }
+        },
+        "TimesheetsDetail": {
+          "type": "Component",
+          "id": "TimesheetsDetail",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "entitySet": "Timesheets",
+              "editableHeaderContent": false,
+              "initialLoad": "Auto"
+            }
+          }
+        }
+      }
+    }
+  }
+}

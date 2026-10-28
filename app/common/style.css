@@ -1,0 +1,208 @@
+/* ==========================================================================
+   PSA Sprint — Shared SAP Fiori Design Stylesheet
+   Compatible with SAP Horizon Theme (sap_horizon)
+   ========================================================================== */
+
+/* Overall Page Layout & Spacing */
+.psaPageHeader {
+  padding: 1.5rem 2rem 1rem 2rem;
+  background-color: var(--sapBackgroundColor, #f5f6f7);
+  border-bottom: 1px solid var(--sapGroup_TitleBorderColor, #d9d9d9);
+}
+
+.psaPageTitle {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: var(--sapTextColor, #1d2d3e) !important;
+  margin: 0 !important;
+}
+
+.psaPageSubtitle {
+  font-size: 0.875rem !important;
+  color: var(--sapContent_LabelColor, #6a6d70) !important;
+  margin-top: 0.25rem !important;
+}
+
+/* Dashboard Section */
+.psaSection {
+  margin: 1.5rem 2rem;
+}
+
+.psaSectionTitle {
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+  color: var(--sapTextColor, #1d2d3e) !important;
+  margin-bottom: 1rem !important;
+}
+
+/* Dashboard KPI Grid (Responsive) */
+.psaDashboardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* KPI Card Styles */
+.psaKpiCard {
+  background: var(--sapTile_Background, #ffffff);
+  border: 1px solid var(--sapTile_BorderColor, #e5e5e5);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  box-shadow: var(--sapContent_Shadow0, 0 1px 4px rgba(0,0,0,0.06));
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 120px;
+}
+
+.psaKpiCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sapContent_Shadow1, 0 4px 12px rgba(0,0,0,0.12));
+}
+
+.psaKpiHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.psaKpiIcon {
+  font-size: 1.5rem !important;
+  color: var(--sapBrandColor, #0070f2) !important;
+}
+
+.psaKpiValue {
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  color: var(--sapTextColor, #1d2d3e) !important;
+  line-height: 1.2 !important;
+}
+
+.psaKpiLabel {
+  font-size: 0.875rem !important;
+  color: var(--sapContent_LabelColor, #6a6d70) !important;
+  font-weight: 500 !important;
+  margin-top: 0.25rem !important;
+}
+
+/* Budget Burn Horizontal Progress Bar */
+.psaBudgetBar {
+  width: 100%;
+  min-width: 100px;
+  max-width: 160px;
+  height: 16px;
+  background-color: #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  border: 1px solid #ced4da;
+}
+
+.psaBudgetBarFill {
+  height: 100%;
+  transition: width 0.3s ease-in-out;
+  border-radius: 7px 0 0 7px;
+}
+
+/* Master Spec Required Thresholds:
+   - Green when below 80%
+   - Amber when at least 80% but below 100%
+   - Red when 100% or higher
+*/
+.psaBudgetBarFill.green {
+  background-color: #2b7c2b !important; /* SAP positive / green */
+}
+
+.psaBudgetBarFill.amber {
+  background-color: #e78c07 !important; /* SAP critical / amber */
+}
+
+.psaBudgetBarFill.red {
+  background-color: #bb0000 !important; /* SAP negative / red */
+}
+
+.psaBudgetBurnText {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.psaBudgetBurnText.green {
+  color: #2b7c2b;
+}
+
+.psaBudgetBurnText.amber {
+  color: #c07200;
+}
+
+.psaBudgetBurnText.red {
+  color: #bb0000;
+}
+
+/* Status Badges */
+.psaStatusBadge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.psaStatusActive, .psaStatusApproved, .psaStatusCompleted, .psaStatusPaid {
+  background-color: #e7f5e8;
+  color: #1a6b24;
+  border: 1px solid #a3d9ad;
+}
+
+.psaStatusPlanning, .psaStatusDraft, .psaStatusSubmitted, .psaStatusIssued, .psaStatusOnHold {
+  background-color: #fff8e6;
+  color: #9c6500;
+  border: 1px solid #ffd880;
+}
+
+.psaStatusCancelled, .psaStatusRejected, .psaStatusOverdue, .psaStatusExceeded, .psaStatusBlocked {
+  background-color: #fde8e8;
+  color: #9c1a1a;
+  border: 1px solid #f8a5a5;
+}
+
+/* Empty States */
+.psaEmptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--sapContent_LabelColor, #6a6d70);
+}
+
+.psaEmptyStateIcon {
+  font-size: 3rem !important;
+  color: var(--sapNeutralBorderColor, #a9b4be) !important;
+  margin-bottom: 1rem;
+}
+
+/* Action Area */
+.psaActionToolbar {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .psaDashboardGrid {
+    grid-template-columns: 1fr;
+  }
+  .psaPageHeader, .psaSection {
+    margin: 1rem;
+    padding: 1rem;
+  }
+}

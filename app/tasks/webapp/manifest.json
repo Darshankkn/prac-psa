@@ -1,0 +1,88 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "psasprint.tasks",
+    "type": "application",
+    "title": "Tasks",
+    "description": "Tasks Management",
+    "dataSources": {
+      "mainService": {
+        "uri": "/psa/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui5": {
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "models": {
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      }
+    },
+    "routing": {
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "TasksList",
+          "target": "TasksList"
+        },
+        {
+          "pattern": "Tasks({key}):?query:",
+          "name": "TasksDetail",
+          "target": "TasksDetail"
+        }
+      ],
+      "targets": {
+        "TasksList": {
+          "type": "Component",
+          "id": "TasksList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "entitySet": "Tasks",
+              "variantManagement": "Page",
+              "navigation": {
+                "Tasks": {
+                  "detail": {
+                    "route": "TasksDetail"
+                  }
+                }
+              },
+              "initialLoad": "Auto"
+            }
+          }
+        },
+        "TasksDetail": {
+          "type": "Component",
+          "id": "TasksDetail",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "entitySet": "Tasks",
+              "editableHeaderContent": false,
+              "initialLoad": "Auto"
+            }
+          }
+        }
+      }
+    }
+  }
+}

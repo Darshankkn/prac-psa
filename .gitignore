@@ -1,0 +1,12 @@
+node_modules/
+gen/
+*.sqlite*
+*.db*
+default-*.json
+connection.properties
+package-lock.json
+.env
+.env.*
+mta_archives/
+*.mtar
+resources/

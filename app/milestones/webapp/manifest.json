@@ -1,0 +1,88 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "psasprint.milestones",
+    "type": "application",
+    "title": "Milestones",
+    "description": "Milestones Management",
+    "dataSources": {
+      "mainService": {
+        "uri": "/psa/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui5": {
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "models": {
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      }
+    },
+    "routing": {
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "MilestonesList",
+          "target": "MilestonesList"
+        },
+        {
+          "pattern": "Milestones({key}):?query:",
+          "name": "MilestonesDetail",
+          "target": "MilestonesDetail"
+        }
+      ],
+      "targets": {
+        "MilestonesList": {
+          "type": "Component",
+          "id": "MilestonesList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "entitySet": "Milestones",
+              "variantManagement": "Page",
+              "navigation": {
+                "Milestones": {
+                  "detail": {
+                    "route": "MilestonesDetail"
+                  }
+                }
+              },
+              "initialLoad": "Auto"
+            }
+          }
+        },
+        "MilestonesDetail": {
+          "type": "Component",
+          "id": "MilestonesDetail",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "entitySet": "Milestones",
+              "editableHeaderContent": false,
+              "initialLoad": "Auto"
+            }
+          }
+        }
+      }
+    }
+  }
+}

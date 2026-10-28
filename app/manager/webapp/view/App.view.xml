@@ -1,0 +1,48 @@
+<mvc:View
+    controllerName="psasprint.manager.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:tnt="sap.tnt"
+    displayBlock="true">
+    <tnt:ToolPage id="toolPage">
+        <tnt:header>
+            <tnt:ToolHeader>
+                <Button
+                    id="sideNavigationToggleButton"
+                    icon="sap-icon://menu2"
+                    type="Transparent"
+                    press=".onMenuButtonPress">
+                    <layoutData>
+                        <OverflowToolbarLayoutData priority="NeverOverflow" />
+                    </layoutData>
+                </Button>
+                <Title text="PSA Sprint — Manager Portal" level="H2" />
+                <ToolbarSpacer />
+                <Button icon="sap-icon://bell" text="Alerts" press=".onNavAlerts" type="Transparent" />
+                <Button icon="sap-icon://person-placeholder" text="Manager Profile" type="Transparent" />
+            </tnt:ToolHeader>
+        </tnt:header>
+        <tnt:sideContent>
+            <tnt:SideNavigation
+                id="sideNavigation"
+                selectedKey="dashboard"
+                itemSelect=".onItemSelect">
+                <tnt:NavigationList itemSelect=".onItemSelect">
+                    <tnt:NavigationListItem text="Manager Dashboard" icon="sap-icon://bbyd-dashboard" key="dashboard" href="/manager/webapp/index.html" />
+                    <tnt:NavigationListItem text="Projects" icon="sap-icon://product" key="projects" href="/projects/webapp/index.html" />
+                    <tnt:NavigationListItem text="Clients" icon="sap-icon://customer" key="clients" href="/clients/webapp/index.html" />
+                    <tnt:NavigationListItem text="Employees" icon="sap-icon://group" key="employees" href="/employees/webapp/index.html" />
+                    <tnt:NavigationListItem text="Timesheets" icon="sap-icon://timesheet" key="timesheets" href="/timesheets/webapp/index.html" />
+                    <tnt:NavigationListItem text="Tasks" icon="sap-icon://task" key="tasks" href="/tasks/webapp/index.html" />
+                    <tnt:NavigationListItem text="Budgets" icon="sap-icon://money-bills" key="budgets" href="/budgets/webapp/index.html" />
+                    <tnt:NavigationListItem text="Milestones" icon="sap-icon://flag" key="milestones" href="/milestones/webapp/index.html" />
+                    <tnt:NavigationListItem text="Invoices" icon="sap-icon://sales-order-item" key="invoices" href="/invoices/webapp/index.html" />
+                    <tnt:NavigationListItem text="Alerts" icon="sap-icon://alert" key="alerts" href="/alerts/webapp/index.html" />
+                </tnt:NavigationList>
+            </tnt:SideNavigation>
+        </tnt:sideContent>
+        <tnt:mainContents>
+            <App id="pageContainer" />
+        </tnt:mainContents>
+    </tnt:ToolPage>
+</mvc:View>

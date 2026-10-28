@@ -1,0 +1,281 @@
+### ===========================================================================
+### PSA Sprint — Integration & Workflow Test Suite
+### Complete HTTP test suite for PSAService endpoints, validations, and workflows.
+### ===========================================================================
+
+@host = http://localhost:4004
+@adminAuth = Basic YWRtaW5AcHNhLmNvbTphZG1pbg==
+@managerAuth = Basic bWFuYWdlckBwc2EuY29tOm1hbmFnZXI=
+@employeeAuth = Basic ZW1wbG95ZWVAcHNhLmNvbTplbXBsb3llZQ==
+@emp2Auth = Basic ZW1wMkBwc2EuY29tOmVtcGxveWVl
+
+### ===========================================================================
+### 1. Authentication & Identity Mapping (whoAmI)
+### ===========================================================================
+
+### 1.1 WhoAmI — Admin Profile
+GET {{host}}/psa/whoAmI()
+Authorization: {{adminAuth}}
+Accept: application/json
+
+### 1.2 WhoAmI — Manager Profile
+GET {{host}}/psa/whoAmI()
+Authorization: {{managerAuth}}
+Accept: application/json
+
+### 1.3 WhoAmI — Employee Profile
+GET {{host}}/psa/whoAmI()
+Authorization: {{employeeAuth}}
+Accept: application/json
+
+
+### ===========================================================================
+### 2. Role-Based Dashboard Functions
+### ===========================================================================
+
+### 2.1 Manager Dashboard KPIs (Scoped to Manager's Team/Projects)
+GET {{host}}/psa/getManagerDashboard()
+Authorization: {{managerAuth}}
+Accept: application/json
+
+### 2.2 Manager Project Portfolio (Table with Consumed Hours & Budget Burn)
+GET {{host}}/psa/getProjectPortfolio()
+Authorization: {{managerAuth}}
+Accept: application/json
+
+### 2.3 Admin Dashboard KPIs (Organization-Wide Metrics)
+GET {{host}}/psa/getAdminDashboard()
+Authorization: {{adminAuth}}
+Accept: application/json
+
+### 2.4 Employee Dashboard KPIs (Personal 4 Metrics)
+GET {{host}}/psa/getEmployeeDashboard()
+Authorization: {{employeeAuth}}
+Accept: application/json
+
+### 2.5 Employee My Projects (Assigned Projects Only)
+GET {{host}}/psa/getMyProjects()
+Authorization: {{employeeAuth}}
+Accept: application/json
+
+
+### ===========================================================================
+### 3. Timesheet Workflow (Draft -> Submit -> Approve / Reject -> Resubmit)
+### ===========================================================================
+
+### 3.1 Read Employee's Own Timesheets (Employee Scope)
+GET {{host}}/psa/Timesheets?$filter=employee_ID eq 11111111-1111-1111-1111-111111111103&$expand=entries
+Authorization: {{employeeAuth}}
+Accept: application/json
+
+### 3.2 Create a New Draft Timesheet for Week 2026-10-26
+POST {{host}}/psa/Timesheets
+Authorization: {{employeeAuth}}
+Content-Type: application/json
+
+{
+  "ID": "55555555-5555-5555-5555-999999999901",
+  "WEEK_START": "2026-10-26",
+  "employee_ID": "11111111-1111-1111-1111-111111111103"
+}
+
+### 3.3 Add Timesheet Entry (Work Date must fall within the week)
+POST {{host}}/psa/TimesheetEntries
+Authorization: {{employeeAuth}}
+Content-Type: application/json
+
+{
+  "ID": "66666666-6666-6666-6666-999999999901",
+  "timesheet_ID": "55555555-5555-5555-5555-999999999901",
+  "project_ID": "33333333-3333-3333-3333-333333333301",
+  "WORK_DATE": "2026-10-26",
+  "HOURS": 8.00,
+  "DESCRIPTION": "CAP service handler unit testing and validation"
+}
+
+### 3.4 Submit Timesheet for Manager Review
+POST {{host}}/psa/submitTimesheet
+Authorization: {{employeeAuth}}
+Content-Type: application/json
+
+{
+  "timesheetId": "55555555-5555-5555-5555-999999999901"
+}
+
+### 3.5 Manager Approves the Submitted Timesheet
+POST {{host}}/psa/approveTimesheet
+Authorization: {{managerAuth}}
+Content-Type: application/json
+
+{
+  "timesheetId": "55555555-5555-5555-5555-999999999901"
+}
+
+### 3.6 Reject Timesheet with Mandatory Reason (Testing Rejection Flow)
+POST {{host}}/psa/rejectTimesheet
+Authorization: {{managerAuth}}
+Content-Type: application/json
+
+{
+  "timesheetId": "55555555-5555-5555-5555-555555555505",
+  "reason": "Please provide more details on task deliverables for Thursday."
+}
+
+### 3.7 Validation Check: Reject WITHOUT Reason — MUST FAIL (Mandatory Check)
+POST {{host}}/psa/rejectTimesheet
+Authorization: {{managerAuth}}
+Content-Type: application/json
+
+{
+  "timesheetId": "55555555-5555-5555-5555-555555555505",
+  "reason": ""
+}
+
+### 3.8 Security Check: Employee Attempting Self-Approval — MUST FAIL
+POST {{host}}/psa/approveTimesheet
+Authorization: {{employeeAuth}}
+Content-Type: application/json
+
+{
+  "timesheetId": "55555555-5555-5555-5555-555555555501"
+}
+
+
+### ===========================================================================
+### 4. Entity CRUD Operations
+### ===========================================================================
+
+### 4.1 Clients — Read List
+GET {{host}}/psa/Clients?$select=CLIENT_CODE,CLIENT_NAME,STATUS
+Authorization: {{managerAuth}}
+Accept: application/json
+
+### 4.2 Clients — Create New Client (Admin Authority)
+POST {{host}}/psa/Clients
+Authorization: {{adminAuth}}
+Content-Type: application/json
+
+{
+  "CLIENT_CODE": "C099",
+  "CLIENT_NAME": "Acme Innovations Ltd",
+  "EMAIL": "info@acme.com",
+  "PHONE": "+91-80-99887766",
+  "CONTACT_PERSON": "Suresh Raina",
+  "STATUS": "ACTIVE",
+  "CITY": "Hyderabad",
+  "COUNTRY": "India"
+}
+
+### 4.3 Employees — Read Directory
+GET {{host}}/psa/Employees?$select=EMPLOYEE_CODE,FULL_NAME,ROLE,DEPARTMENT
+Authorization: {{managerAuth}}
+Accept: application/json
+
+### 4.4 Projects — Read with Associations
+GET {{host}}/psa/Projects?$expand=client,manager,budgets
+Authorization: {{managerAuth}}
+Accept: application/json
+
+### 4.5 Budgets — Read Financial Budgets
+GET {{host}}/psa/Budgets?$expand=project
+Authorization: {{managerAuth}}
+Accept: application/json
+
+### 4.6 Tasks — Read Open Tasks
+GET {{host}}/psa/Tasks?$filter=STATUS eq 'OPEN'&$expand=assignedTo,project
+Authorization: {{managerAuth}}
+Accept: application/json
+
+### 4.7 Milestones — Read Milestones
+GET {{host}}/psa/Milestones?$orderby=DUE_DATE asc
+Authorization: {{managerAuth}}
+Accept: application/json
+
+### 4.8 Invoices — Read Financial Invoices
+GET {{host}}/psa/Invoices?$expand=client,project
+Authorization: {{managerAuth}}
+Accept: application/json
+
+### 4.9 Alerts — Read Active Alerts
+GET {{host}}/psa/Alerts?$filter=IS_RESOLVED eq false&$orderby=SEVERITY desc
+Authorization: {{managerAuth}}
+Accept: application/json
+
+
+### ===========================================================================
+### 5. Access Control & Authorization Boundaries
+### ===========================================================================
+
+### 5.1 Employee Attempting to Access Admin Dashboard — MUST FAIL (403 Forbidden)
+GET {{host}}/psa/getAdminDashboard()
+Authorization: {{employeeAuth}}
+Accept: application/json
+
+### 5.2 Employee Attempting to Read Financial Budgets — MUST FAIL (403 Forbidden)
+GET {{host}}/psa/Budgets
+Authorization: {{employeeAuth}}
+Accept: application/json
+
+### 5.3 Employee Attempting to Create Project — MUST FAIL (403 Forbidden)
+POST {{host}}/psa/Projects
+Authorization: {{employeeAuth}}
+Content-Type: application/json
+
+{
+  "PROJECT_CODE": "P999",
+  "PROJECT_NAME": "Unauthorized Project Creation Attempt",
+  "client_ID": "22222222-2222-2222-2222-222222222201"
+}
+
+
+### ===========================================================================
+### 6. Service Metadata & OData V4 Spec
+### ===========================================================================
+
+### 6.1 OData V4 Metadata Document
+GET {{host}}/psa/$metadata
+Authorization: {{adminAuth}}
+
+
+### ===========================================================================
+### 7. Invoice Lifecycle Workflow & Task Updates
+### ===========================================================================
+
+### 7.1 Admin Marks Invoice as Issued
+POST {{host}}/psa/markInvoiceIssued
+Authorization: {{adminAuth}}
+Content-Type: application/json
+
+{
+  "invoiceId": "77777777-7777-7777-7777-777777777705"
+}
+
+### 7.2 Manager Attempting to Issue Invoice — MUST FAIL (403 Forbidden)
+POST {{host}}/psa/markInvoiceIssued
+Authorization: {{managerAuth}}
+Content-Type: application/json
+
+{
+  "invoiceId": "77777777-7777-7777-7777-777777777705"
+}
+
+### 7.3 Admin Marks Issued Invoice as Paid
+POST {{host}}/psa/markInvoicePaid
+Authorization: {{adminAuth}}
+Content-Type: application/json
+
+{
+  "invoiceId": "77777777-7777-7777-7777-777777777705",
+  "paidAmount": 708000
+}
+
+### 7.4 Employee Updates Task Status on Assigned Task
+PATCH {{host}}/psa/Tasks(55555555-0000-0000-0000-000000000002)
+Authorization: {{employeeAuth}}
+Content-Type: application/json
+
+{
+  "STATUS": "IN_PROGRESS",
+  "ACTUAL_HOURS": 50
+}
+

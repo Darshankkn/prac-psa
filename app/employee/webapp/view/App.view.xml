@@ -1,0 +1,44 @@
+<mvc:View
+    controllerName="psasprint.employee.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:tnt="sap.tnt"
+    displayBlock="true">
+    <tnt:ToolPage id="toolPage">
+        <tnt:header>
+            <tnt:ToolHeader>
+                <Button
+                    id="sideNavigationToggleButton"
+                    icon="sap-icon://menu2"
+                    type="Transparent"
+                    press=".onMenuButtonPress">
+                    <layoutData>
+                        <OverflowToolbarLayoutData priority="NeverOverflow" />
+                    </layoutData>
+                </Button>
+                <Title text="PSA Sprint — Employee Self-Service" level="H2" />
+                <ToolbarSpacer />
+                <Button icon="sap-icon://bell" text="My Alerts" press=".onNavAlerts" type="Transparent" />
+                <Button icon="sap-icon://person-placeholder" text="{emp>/profile/fullName}" type="Transparent" />
+            </tnt:ToolHeader>
+        </tnt:header>
+        <tnt:sideContent>
+            <tnt:SideNavigation
+                id="sideNavigation"
+                selectedKey="dashboard"
+                itemSelect=".onItemSelect">
+                <tnt:NavigationList itemSelect=".onItemSelect">
+                    <tnt:NavigationListItem text="My Dashboard" icon="sap-icon://bbyd-dashboard" key="dashboard" href="/employee/webapp/index.html" />
+                    <tnt:NavigationListItem text="My Timesheets" icon="sap-icon://timesheet" key="timesheets" href="/timesheets/webapp/index.html" />
+                    <tnt:NavigationListItem text="My Projects" icon="sap-icon://product" key="projects" href="/projects/webapp/index.html" />
+                    <tnt:NavigationListItem text="My Tasks" icon="sap-icon://task" key="tasks" href="/tasks/webapp/index.html" />
+                    <tnt:NavigationListItem text="Milestones" icon="sap-icon://flag" key="milestones" href="/milestones/webapp/index.html" />
+                    <tnt:NavigationListItem text="My Alerts" icon="sap-icon://alert" key="alerts" href="/alerts/webapp/index.html" />
+                </tnt:NavigationList>
+            </tnt:SideNavigation>
+        </tnt:sideContent>
+        <tnt:mainContents>
+            <App id="pageContainer" />
+        </tnt:mainContents>
+    </tnt:ToolPage>
+</mvc:View>

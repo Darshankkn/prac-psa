@@ -1,0 +1,204 @@
+<mvc:View
+    controllerName="psasprint.admin.controller.Dashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout">
+
+    <Page
+        id="adminDashboardPage"
+        title="Organization Administrator Dashboard"
+        showNavButton="false"
+        busy="{admin>/busy}">
+        <headerContent>
+            <Button icon="sap-icon://refresh" tooltip="Refresh Organization Metrics" press=".onRefresh" />
+        </headerContent>
+
+        <content>
+            <!-- Quick Action Command Strip -->
+            <VBox class="psaSection" style="margin-bottom: 0.5rem;">
+                <HBox alignItems="Center">
+                    <Button text="+ Create Client Record" icon="sap-icon://customer" type="Emphasized" press=".onOpenCreateClientDialog" class="sapUiSmallMarginEnd" />
+                    <Button text="+ Create Project &amp; Assign Manager" icon="sap-icon://product" type="Emphasized" press=".onOpenCreateProjectDialog" />
+                </HBox>
+            </VBox>
+
+            <!-- Organization-wide KPI Cards Section (6 Cards) -->
+            <VBox class="psaSection">
+                <Title text="Organization-Wide Key Performance Indicators" level="H3" class="psaSectionTitle" />
+                <layout:Grid defaultSpan="XL2 L4 M6 S12" class="sapUiNoMargin">
+                    <!-- 1. Active Projects -->
+                    <VBox class="psaKpiCard" press=".onNavProjects">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://project-definition-triangle-2" class="psaKpiIcon" />
+                        </HBox>
+                        <Text text="{admin>/kpis/activeProjects}" class="psaKpiValue" />
+                        <Text text="Total Active Projects" class="psaKpiLabel" />
+                    </VBox>
+
+                    <!-- 2. At-Risk Budgets -->
+                    <VBox class="psaKpiCard" press=".onNavBudgets">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://alert" class="psaKpiIcon" color="#e78c07" />
+                        </HBox>
+                        <Text text="{admin>/kpis/atRiskBudgets}" class="psaKpiValue" />
+                        <Text text="At-Risk Budgets (≥80%)" class="psaKpiLabel" />
+                    </VBox>
+
+                    <!-- 3. Pending Approvals -->
+                    <VBox class="psaKpiCard" press=".onNavTimesheets">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://task" class="psaKpiIcon" />
+                        </HBox>
+                        <Text text="{admin>/kpis/pendingApprovals}" class="psaKpiValue" />
+                        <Text text="Pending Approvals" class="psaKpiLabel" />
+                    </VBox>
+
+                    <!-- 4. Unbilled Hours -->
+                    <VBox class="psaKpiCard" press=".onNavTimesheets">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://time-entry-request" class="psaKpiIcon" />
+                        </HBox>
+                        <Text text="{admin>/kpis/unbilledHours} h" class="psaKpiValue" />
+                        <Text text="Unbilled Hours" class="psaKpiLabel" />
+                    </VBox>
+
+                    <!-- 5. Draft Invoices -->
+                    <VBox class="psaKpiCard" press=".onNavInvoices">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://document" class="psaKpiIcon" />
+                        </HBox>
+                        <Text text="{admin>/kpis/draftInvoices}" class="psaKpiValue" />
+                        <Text text="Draft Invoices" class="psaKpiLabel" />
+                    </VBox>
+
+                    <!-- 6. Overdue Amount -->
+                    <VBox class="psaKpiCard" press=".onNavInvoices">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://money-bills" class="psaKpiIcon" color="#bb0000" />
+                        </HBox>
+                        <Text text="₹{admin>/kpis/overdueAmount}" class="psaKpiValue" />
+                        <Text text="Total Overdue Amount" class="psaKpiLabel" />
+                    </VBox>
+                </layout:Grid>
+            </VBox>
+
+            <!-- 1. Invoices Lifecycle Management (Draft -> Issued -> Paid) -->
+            <VBox class="psaSection">
+                <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
+                    <VBox>
+                        <Title text="Invoice Billing &amp; Lifecycle Management" level="H3" class="psaSectionTitle" style="margin-bottom: 0.2rem;" />
+                        <Text text="Generate new billing invoices, transition Draft to Issued, and record payments as Paid." />
+                    </VBox>
+                    <HBox>
+                        <Button text="+ Generate Invoice" icon="sap-icon://add" type="Emphasized" press=".onOpenGenerateInvoiceDialog" class="sapUiTinyMarginEnd" />
+                        <Button text="All Invoices App" icon="sap-icon://open-command-field" press=".onNavInvoices" />
+                    </HBox>
+                </HBox>
+
+                <Table
+                    id="adminInvoicesTable"
+                    items="{admin>/invoices}"
+                    noDataText="No invoices found."
+                    growing="true"
+                    growingThreshold="10">
+                    <columns>
+                        <Column width="10rem"><Text text="Invoice #" /></Column>
+                        <Column width="12rem"><Text text="Client" /></Column>
+                        <Column width="12rem"><Text text="Project" /></Column>
+                        <Column width="8rem"><Text text="Due Date" /></Column>
+                        <Column width="9rem" hAlign="End"><Text text="Gross Amount" /></Column>
+                        <Column width="9rem" hAlign="End"><Text text="Paid Amount" /></Column>
+                        <Column width="8rem" hAlign="Center"><Text text="Status" /></Column>
+                        <Column width="13rem" hAlign="Center"><Text text="Invoice Action" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier title="{admin>INVOICE_NUMBER}" text="{admin>INVOICE_DATE}" />
+                                <Text text="{admin>client/CLIENT_NAME}" />
+                                <Text text="{admin>project/PROJECT_NAME}" />
+                                <Text text="{admin>DUE_DATE}" />
+                                <Text text="₹{path: 'admin>GROSS_AMOUNT', formatter: '.formatCurrency'}" />
+                                <Text text="₹{path: 'admin>PAID_AMOUNT', formatter: '.formatCurrency'}" />
+                                <ObjectStatus
+                                    text="{admin>STATUS}"
+                                    state="{path: 'admin>STATUS', formatter: '.formatInvoiceStatusState'}" />
+                                <HBox justifyContent="Center">
+                                    <!-- Mark as Issued Button: Visible only when DRAFT -->
+                                    <Button
+                                        text="Mark Issued"
+                                        icon="sap-icon://paper-plane"
+                                        type="Emphasized"
+                                        press=".onMarkInvoiceIssued"
+                                        visible="{= ${admin>STATUS} === 'DRAFT'}" />
+                                    <!-- Mark as Paid Button: Visible when ISSUED or OVERDUE -->
+                                    <Button
+                                        text="Mark Paid"
+                                        icon="sap-icon://money-bills"
+                                        type="Accept"
+                                        press=".onMarkInvoicePaid"
+                                        visible="{= ${admin>STATUS} === 'ISSUED' || ${admin>STATUS} === 'OVERDUE'}" />
+                                    <!-- Paid Indicator -->
+                                    <ObjectStatus
+                                        text="Paid in Full"
+                                        state="Success"
+                                        icon="sap-icon://accept"
+                                        visible="{= ${admin>STATUS} === 'PAID'}" />
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+
+            <!-- 2. Organization Timesheet Oversight -->
+            <VBox class="psaSection">
+                <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
+                    <VBox>
+                        <Title text="Timesheet Oversight &amp; Executive Escalations" level="H3" class="psaSectionTitle" style="margin-bottom: 0.2rem;" />
+                        <Text text="Organization-wide pending employee timesheets with administrative override approval authority." />
+                    </VBox>
+                    <Button text="All Timesheets App" icon="sap-icon://open-command-field" press=".onNavTimesheets" />
+                </HBox>
+
+                <Table
+                    id="adminApprovalsTable"
+                    items="{admin>/pendingTimesheets}"
+                    noDataText="No pending timesheets currently in the organization."
+                    growing="true">
+                    <columns>
+                        <Column><Text text="Employee" /></Column>
+                        <Column><Text text="Week Starting" /></Column>
+                        <Column hAlign="End"><Text text="Total Hours" /></Column>
+                        <Column><Text text="Status" /></Column>
+                        <Column hAlign="Center"><Text text="Administrative Action" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier
+                                    title="{admin>employee/FULL_NAME}"
+                                    text="{admin>employee/EMAIL}" />
+                                <Text text="{admin>WEEK_START}" />
+                                <Text text="{admin>TOTAL_HOURS} h" />
+                                <ObjectStatus text="{admin>STATUS}" state="Warning" />
+                                <HBox justifyContent="Center">
+                                    <Button
+                                        text="Admin Approve"
+                                        type="Accept"
+                                        press=".onAdminApprove"
+                                        class="sapUiTinyMarginEnd" />
+                                    <Button
+                                        text="Admin Reject"
+                                        type="Reject"
+                                        press=".onAdminReject" />
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

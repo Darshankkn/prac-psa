@@ -1,0 +1,225 @@
+<mvc:View
+    controllerName="psasprint.employee.controller.Dashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout">
+
+    <Page
+        id="employeeDashboardPage"
+        title="Employee Dashboard"
+        showNavButton="false"
+        busy="{emp>/busy}">
+        <headerContent>
+            <Button icon="sap-icon://refresh" tooltip="Refresh Dashboard" press=".onRefresh" />
+        </headerContent>
+
+        <content>
+            <!-- User Profile Summary Banner -->
+            <VBox class="psaPageHeader">
+                <HBox alignItems="Center" justifyContent="SpaceBetween" wrap="Wrap">
+                    <VBox>
+                        <Title text="{emp>/profile/fullName}" level="H2" class="psaPageTitle" />
+                        <Text text="{emp>/profile/role} — {emp>/profile/department} ({emp>/profile/employeeCode})" class="psaPageSubtitle" />
+                    </VBox>
+                    <HBox alignItems="Center" class="sapUiTinyMarginTopBottom">
+                        <Label text="Active Employee:" class="sapUiTinyMarginEnd" />
+                        <Select
+                            id="employeeSwitcher"
+                            selectedKey="{emp>/profile/employeeId}"
+                            change=".onEmployeeChange"
+                            items="{emp>/availableEmployees}">
+                            <core:Item key="{emp>ID}" text="{emp>FULL_NAME} ({emp>EMPLOYEE_CODE})" />
+                        </Select>
+                        <ObjectStatus text="{emp>/profile/email}" icon="sap-icon://email" state="Information" class="sapUiSmallMarginBegin" />
+                    </HBox>
+                </HBox>
+            </VBox>
+
+            <!-- 4 Personal KPI Cards -->
+            <VBox class="psaSection">
+                <Title text="My Work Overview" level="H3" class="psaSectionTitle" />
+                <layout:Grid defaultSpan="XL3 L3 M6 S12" class="sapUiNoMargin">
+                    <!-- 1. My Active Projects -->
+                    <VBox class="psaKpiCard" press=".onNavProjects">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://project-definition-triangle-2" class="psaKpiIcon" />
+                        </HBox>
+                        <Text text="{emp>/kpis/myActiveProjects}" class="psaKpiValue" />
+                        <Text text="My Active Projects" class="psaKpiLabel" />
+                    </VBox>
+
+                    <!-- 2. My Open Timesheets -->
+                    <VBox class="psaKpiCard">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://timesheet" class="psaKpiIcon" />
+                        </HBox>
+                        <Text text="{emp>/kpis/myOpenTimesheets}" class="psaKpiValue" />
+                        <Text text="Draft Timesheets" class="psaKpiLabel" />
+                    </VBox>
+
+                    <!-- 3. My Pending Tasks -->
+                    <VBox class="psaKpiCard" press=".onNavTasks">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://task" class="psaKpiIcon" />
+                        </HBox>
+                        <Text text="{emp>/kpis/myPendingTasks}" class="psaKpiValue" />
+                        <Text text="My Open Tasks" class="psaKpiLabel" />
+                    </VBox>
+
+                    <!-- 4. Timesheets Needing Attention (Rejected) -->
+                    <VBox class="psaKpiCard">
+                        <HBox class="psaKpiHeader">
+                            <core:Icon src="sap-icon://alert" class="psaKpiIcon" color="#bb0000" />
+                        </HBox>
+                        <Text text="{emp>/kpis/needsAttention}" class="psaKpiValue" />
+                        <Text text="Needs Attention (Rejected)" class="psaKpiLabel" />
+                    </VBox>
+                </layout:Grid>
+            </VBox>
+
+            <!-- My Timesheets Section (Functional Draft/Submit/Resubmit Workflow) -->
+            <VBox class="psaSection">
+                <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
+                    <Title text="My Timesheets" level="H3" class="psaSectionTitle" />
+                    <Button text="New Timesheet" icon="sap-icon://add" type="Emphasized" press=".onOpenCreateTimesheetDialog" />
+                </HBox>
+
+                <Table
+                    id="myTimesheetsTable"
+                    items="{emp>/myTimesheets}"
+                    noDataText="No timesheets created yet. Click 'New Timesheet' to begin.">
+                    <columns>
+                        <Column width="9rem"><Text text="Week Starting" /></Column>
+                        <Column width="7rem" hAlign="End"><Text text="Total Hours" /></Column>
+                        <Column width="9rem"><Text text="Status" /></Column>
+                        <Column width="18rem"><Text text="Feedback / Rejection Reason" /></Column>
+                        <Column hAlign="Center"><Text text="Actions" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{emp>WEEK_START}" />
+                                <Text text="{emp>TOTAL_HOURS} h" />
+                                <ObjectStatus
+                                    text="{emp>STATUS}"
+                                    state="{path: 'emp>STATUS', formatter: '.formatTimesheetState'}" />
+                                <Text
+                                    text="{= ${emp>REJECTION_REASON} ? ${emp>REJECTION_REASON} : '-'}"
+                                    class="{= ${emp>STATUS} === 'REJECTED' ? 'sapUiNegativeText' : ''}" />
+                                <HBox justifyContent="Center">
+                                    <!-- Add Entry button for DRAFT or REJECTED -->
+                                    <Button
+                                        text="Add Entry"
+                                        type="Transparent"
+                                        icon="sap-icon://add-process"
+                                        press=".onOpenAddEntryDialog"
+                                        visible="{= ${emp>STATUS} === 'DRAFT' || ${emp>STATUS} === 'REJECTED'}"
+                                        class="sapUiTinyMarginEnd" />
+                                    <!-- Submit button for DRAFT or REJECTED -->
+                                    <Button
+                                        text="{= ${emp>STATUS} === 'REJECTED' ? 'Resubmit' : 'Submit'}"
+                                        type="Accept"
+                                        icon="sap-icon://paper-plane"
+                                        press=".onSubmitTimesheet"
+                                        visible="{= ${emp>STATUS} === 'DRAFT' || ${emp>STATUS} === 'REJECTED'}" />
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+
+            <!-- My Projects Section -->
+            <VBox class="psaSection">
+                <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
+                    <Title text="My Assigned Projects" level="H3" class="psaSectionTitle" />
+                    <Button text="All Projects" icon="sap-icon://open-command-field" press=".onNavProjects" />
+                </HBox>
+
+                <Table
+                    id="myProjectsTable"
+                    items="{emp>/myProjects}"
+                    noDataText="You are not currently assigned to any active projects.">
+                    <columns>
+                        <Column width="8rem"><Text text="Code" /></Column>
+                        <Column><Text text="Project" /></Column>
+                        <Column><Text text="Client" /></Column>
+                        <Column width="8rem"><Text text="Billing" /></Column>
+                        <Column width="8rem"><Text text="Status" /></Column>
+                        <Column width="8rem" hAlign="End"><Text text="Consumed h" /></Column>
+                        <Column width="6rem" hAlign="Center"><Text text="Action" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier title="{emp>projectCode}" />
+                                <Text text="{emp>projectName}" />
+                                <Text text="{emp>clientName}" />
+                                <Text text="{emp>billingType}" />
+                                <ObjectStatus
+                                    text="{emp>status}"
+                                    state="{path: 'emp>status', formatter: '.formatStatusState'}" />
+                                <Text text="{emp>consumedHours} h" />
+                                <Button
+                                    text="View"
+                                    type="Transparent"
+                                    icon="sap-icon://navigation-right-arrow"
+                                    press=".onViewProjectDetails" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+
+            <!-- My Tasks Section (Execution & Progress Updates) -->
+            <VBox class="psaSection">
+                <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
+                    <VBox>
+                        <Title text="My Assigned Tasks &amp; Deliverables" level="H3" class="psaSectionTitle" style="margin-bottom: 0.2rem;" />
+                        <Text text="Execute deliverables assigned by your Project Manager and update task progress &amp; actual hours." />
+                    </VBox>
+                    <Button text="All Tasks App" icon="sap-icon://task" press=".onNavTasks" />
+                </HBox>
+
+                <Table
+                    id="myTasksTable"
+                    items="{emp>/myTasks}"
+                    noDataText="No open tasks assigned to you.">
+                    <columns>
+                        <Column width="14rem"><Text text="Task Title" /></Column>
+                        <Column width="12rem"><Text text="Project" /></Column>
+                        <Column width="8rem"><Text text="Due Date" /></Column>
+                        <Column width="7rem" hAlign="End"><Text text="Est. Hours" /></Column>
+                        <Column width="7rem" hAlign="End"><Text text="Actual Hours" /></Column>
+                        <Column width="8rem" hAlign="Center"><Text text="Priority" /></Column>
+                        <Column width="8rem" hAlign="Center"><Text text="Status" /></Column>
+                        <Column width="9rem" hAlign="Center"><Text text="Action" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier title="{emp>TASK_TITLE}" text="{emp>DESCRIPTION}" />
+                                <Text text="{emp>project/PROJECT_NAME}" />
+                                <Text text="{emp>DUE_DATE}" />
+                                <Text text="{emp>ESTIMATED_HOURS} h" />
+                                <Text text="{emp>ACTUAL_HOURS} h" />
+                                <ObjectStatus
+                                    text="{emp>PRIORITY}"
+                                    state="{path: 'emp>PRIORITY', formatter: '.formatPriorityState'}" />
+                                <ObjectStatus
+                                    text="{emp>STATUS}"
+                                    state="{path: 'emp>STATUS', formatter: '.formatTaskStatusState'}" />
+                                <Button
+                                    text="Update Status"
+                                    icon="sap-icon://edit"
+                                    type="Default"
+                                    press=".onOpenUpdateTaskDialog" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>
